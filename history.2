@@ -1,0 +1,6 @@
+#!/bin/bash -x
+
+for x in client httpd httpd-php nginx ;do scp $x.hosts $x:hosts;ssh $x 'sudo mv hosts /etc';done
+for x in client httpd httpd-php nginx ;do scp $x.firewall $x:firewall;ssh $x 'sudo chown root. firewall&&sudo chmod +x firewall&&sudo mv firewall /usr/local/sbin&&sudo systemctl restart firewall.service';done
+for x in client;do ssh $x 'sudo yum install -y elinks';done
+for x in nginx;do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo systemctl enable nginx&&sudo systemctl start nginx';done

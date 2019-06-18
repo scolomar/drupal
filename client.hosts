@@ -1,0 +1,5 @@
+127.0.0.1   localhost localhost.localdomain
+192.168.255.214 client
+192.168.255.219 httpd
+192.168.255.221 httpd-php
+192.168.255.250 nginx

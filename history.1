@@ -1,0 +1,4 @@
+#!/bin/bash -x
+
+for x in $(grep . list.not_me);do echo $x;scp firewall firewall.service $x:;ssh $x 'sudo chown root. firewall*;sudo chmod +x firewall;sudo mv firewall /usr/local/sbin;sudo mv firewall.service /etc/systemd/system;sudo systemctl daemon-reload;sudo systemctl enable firewall.service;sudo init 6';done
+sudo cp mgmt.firewall /usr/local/sbin/firewall;sudo chown root. /usr/local/sbin/firewall;sudo cp firewall.service /etc/systemd/system;sudo chown root. /etc/systemd/system/firewall.service;sudo chmod 755 /usr/local/sbin/firewall;sudo chmod 644 /etc/systemd/system/firewall.service;sudo systemctl daemon-reload;sudo systemctl enable firewall.service;sudo init 6
