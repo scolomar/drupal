@@ -1,0 +1,10 @@
+#!/bin/bash -x
+
+for x in nginx;do scp $x.httpd.conf $x:httpd.conf;done
+for x in nginx;do scp $x.php-fpm.conf $x:php-fpm.conf;done
+for x in nginx;do scp $x.www.conf $x:www.conf;done
+for x in nginx;do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo systemctl enable nginx&&sudo systemctl start nginx';done
+for x in nginx;do ssh $x 'sudo yum install -y httpd&&sudo systemctl enable httpd&&sudo systemctl start httpd&&sudo yum -y update&&sudo wget https://centos7.iuscommunity.org/ius-release.rpm&&sudo amazon-linux-extras install epel -y&&sudo yum -y install ius-release.rpm&&sudo yum -y update&&sudo sed -i /enabled/s/0/1/ /etc/yum.repos.d/ius-archive.repo&&sudo yum -y install php56u php56u-fpm php56u-mysqlnd.x86_64&&sudo sed -i /memory_limit/s/128/1024/ /etc/php.ini&&sudo cp www.conf /etc/php-fpm.d&&sudo cp php-fpm.conf /etc&&sudo systemctl enable php-fpm&&sudo systemctl restart php-fpm&&wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm&&sudo yum install mysql80-community-release-el7-3.noarch.rpm -y&&sudo yum-config-manager --disable mysql80-community&&sudo yum-config-manager --enable mysql56-community&&sudo yum install mysql-community-server.x86_64 -y&&sudo systemctl enable mysqld&&sudo systemctl start mysqld;';done
+for x in nginx;do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&cat .ssh/id_rsa.pub;';done
+read -p "Please upload the previous SSH public key to your Github repository to proceed and press ENTER when ready" ENTER
+for x in nginx;do scp build.project.props $x:;ssh $x 'ssh git@github.com;sudo yum -y install git&&git clone git@github.com:ec-europa/devco-reference.git&&rm -rf $HOME/devco-reference/.git&&cp $HOME/build.project.props $HOME/devco-reference&&sudo yum install -y composer&&cd $HOME/devco-reference&&composer install&&./toolkit/phing  build-platform&&sudo cp $HOME/httpd.conf /etc/httpd/conf&&sudo systemctl enable httpd&&sudo systemctl restart httpd&&cd $HOME/devco-reference&&./toolkit/phing build-subsite-dev&&./toolkit/phing install-clone&&cd build&&../toolkit/drush rr&&../toolkit/drush cc all;';done
