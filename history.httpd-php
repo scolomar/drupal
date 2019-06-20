@@ -10,3 +10,6 @@ read -p "Please upload the previous SSH public key to your Github repository to 
 
 for x in httpd-php;
 do scp build.project.props httpd.conf $x:;ssh $x 'sudo yum -y install git&&git clone git@github.com:ec-europa/devco-reference.git&&rm -rf $HOME/devco-reference/.git&&cp $HOME/build.project.props $HOME/devco-reference&&sudo yum install -y composer&&cd $HOME/devco-reference&&composer install&&./toolkit/phing  build-platform&&sudo cp $HOME/httpd.conf /etc/httpd/conf&&sudo systemctl enable httpd&&sudo systemctl restart httpd&&cd $HOME/devco-reference&&./toolkit/phing build-subsite-dev&&./toolkit/phing install-clone&&cd build&&../toolkit/drush rr&&../toolkit/drush cc all;';done
+
+sed -i 's/base_url/$base_url = \'http:\/\/192.168.255.221\';/' $HOME/devco-reference/build/sites/devco/settings.php
+
