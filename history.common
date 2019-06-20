@@ -22,4 +22,7 @@ for x in $(grep . list.not_me);
 do ssh $x 'sudo yum install -y elinks';done
 
 for x in $(grep . list.not_me);
-do scp sysctl.conf $x:;ssh $x 'sudo chown root. sysctl.conf&&sudo mv sysctl.conf /etc/sysctl.d/99-sysctl.conf&&sudo init 6';done
+do scp my.cnf $x:;ssh $x 'sudo chown root. my.cnf&&sudo cp my.cnf /etc';done
+
+for x in $(grep . list.not_me);
+do scp sysctl.conf $x:;ssh $x 'sudo chown root. sysctl.conf&&sudo cp sysctl.conf /etc&&sudo init 6';done
