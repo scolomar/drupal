@@ -1,0 +1,93 @@
+#!/bin/bash -x
+
+sudo yum update -y&&sudo yum install git -y&&cd /&&sudo curl -o .gitignore https://raw.githubusercontent.com/secobau/linux/master/Scripts/rootfs.gitignore&&sudo git init&&sudo git add .&&sudo git commit -m "Initial commit"
+
+sudo cp mgmt.hosts /etc/hosts
+
+for x in $(grep . list.not_me);
+do ssh $x 'sudo yum update -y&&sudo yum install git -y&&cd /&&sudo curl -o .gitignore https://raw.githubusercontent.com/secobau/linux/master/Scripts/rootfs.gitignore&&sudo git init&&sudo git add .&&sudo git commit -m "Initial commit"';done;
+
+for x in $(grep . list.not_me);
+do echo $x;scp firewall firewall.service $x:;ssh $x 'sudo chown root. firewall*;sudo chmod +x firewall;sudo mv firewall /usr/local/sbin;sudo mv firewall.service /etc/systemd/system;sudo systemctl daemon-reload;sudo systemctl enable firewall.service';done;
+
+sudo cp mgmt.firewall /usr/local/sbin/firewall;sudo chown root. /usr/local/sbin/firewall;sudo cp firewall.service /etc/systemd/system;sudo chown root. /etc/systemd/system/firewall.service;sudo chmod 755 /usr/local/sbin/firewall;sudo chmod 644 /etc/systemd/system/firewall.service;sudo systemctl daemon-reload;sudo systemctl enable firewall.service;
+
+for x in $(grep . list.not_me);
+do scp $x.hosts $x:hosts;ssh $x 'sudo mv hosts /etc';done
+
+for x in $(grep . list.not_me);
+do scp $x.firewall $x:firewall;ssh $x 'sudo chown root. firewall&&sudo chmod +x firewall&&sudo mv firewall /usr/local/sbin&&sudo systemctl restart firewall.service';done
+
+for x in $(grep . list.not_me);
+do ssh $x 'sudo yum install -y elinks';done
+
+for x in $(grep . list.not_me);
+do scp my.cnf $x:;ssh $x 'sudo chown root. my.cnf&&sudo cp my.cnf /etc';done
+
+
+for x in httpd nginx;
+do scp $x.$x.conf $x:$x.conf;done
+
+for x in httpd httpd-php nginx;
+do scp build.project.props $x:;done
+
+for x in httpd nginx;
+do scp php-fpm.conf www.conf $x:;done
+
+for x in httpd;
+do scp 00-mpm.conf $x:;done
+
+for x in httpd;
+do ssh $x 'sudo yum install -y httpd&&sudo systemctl enable httpd&&sudo systemctl start httpd&&sudo yum -y update&&sudo wget https://centos7.iuscommunity.org/ius-release.rpm&&sudo amazon-linux-extras install epel -y&&sudo yum -y install ius-release.rpm&&sudo yum -y update&&sudo sed -i /enabled/s/0/1/ /etc/yum.repos.d/ius-archive.repo&&sudo yum -y install php56u php56u-fpm php56u-mysqlnd.x86_64&&sudo sed -i /memory_limit/s/128/1024/ /etc/php.ini&&sudo cp www.conf /etc/php-fpm.d&&sudo cp php-fpm.conf /etc&&sudo systemctl enable php-fpm&&sudo systemctl restart php-fpm&&wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm&&sudo yum install mysql80-community-release-el7-3.noarch.rpm -y&&sudo yum-config-manager --disable mysql80-community&&sudo yum-config-manager --enable mysql56-community&&sudo yum install mysql-community-server.x86_64 -y&&sudo systemctl enable mysqld&&sudo systemctl start mysqld;';done
+
+for x in httpd;
+do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&cat .ssh/id_rsa.pub;';done;
+
+read -p "Please upload the previous SSH public key to your Github repository to proceed and press ENTER when ready" ENTER
+
+for x in httpd httpd-php;
+do ssh $x 'sudo cp $HOME/httpd.conf /etc/httpd/conf&&sudo cp $HOME/00-mpm.conf /etc/httpd/conf.modules.d&&sudo systemctl enable httpd&&sudo systemctl restart httpd;';done
+
+sed -i 's/base_url/$base_url = \'http:\/\/192.168.255.219\';/' $HOME/devco-reference/build/sites/devco/settings.php
+
+
+for x in httpd-php;
+do ssh $x 'sudo yum -y update&&sudo wget https://centos7.iuscommunity.org/ius-release.rpm&&sudo amazon-linux-extras install epel -y&&sudo yum -y install ius-release.rpm&&sudo yum -y update&&sudo sed -i /enabled/s/0/1/ /etc/yum.repos.d/ius-archive.repo&&sudo yum -y install php56u php56u-mysqlnd.x86_64&&sudo sed -i /memory_limit/s/128/1024/ /etc/php.ini&&wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm&&sudo yum install mysql80-community-release-el7-3.noarch.rpm -y&&sudo yum-config-manager --disable mysql80-community&&sudo yum-config-manager --enable mysql56-community&&sudo yum install mysql-community-server.x86_64 -y&&sudo systemctl enable mysqld&&sudo systemctl start mysqld;';done
+
+for x in httpd-php;
+do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&cat .ssh/id_rsa.pub;';done
+
+read -p "Please upload the previous SSH public key to your Github repository to proceed and press ENTER when ready" ENTER
+
+
+sed -i 's/base_url/$base_url = \'http:\/\/192.168.255.221\';/' $HOME/devco-reference/build/sites/devco/settings.php
+
+
+for x in nginx;
+do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo yum -y update&&sudo wget https://centos7.iuscommunity.org/ius-release.rpm&&sudo amazon-linux-extras install epel -y&&sudo yum -y install ius-release.rpm&&sudo yum -y update&&sudo sed -i /enabled/s/0/1/ /etc/yum.repos.d/ius-archive.repo&&sudo yum -y install php56u php56u-fpm php56u-mysqlnd.x86_64&&sudo sed -i /memory_limit/s/128/1024/ /etc/php.ini&&sudo cp www.conf /etc/php-fpm.d&&sudo cp php-fpm.conf /etc&&sudo systemctl enable php-fpm&&sudo systemctl restart php-fpm&&wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm&&sudo yum install mysql80-community-release-el7-3.noarch.rpm -y&&sudo yum-config-manager --disable mysql80-community&&sudo yum-config-manager --enable mysql56-community&&sudo yum install mysql-community-server.x86_64 -y&&sudo systemctl enable mysqld&&sudo systemctl start mysqld;';done
+
+for x in nginx;
+do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&cat .ssh/id_rsa.pub;';done
+
+read -p "Please upload the previous SSH public key to your Github repository to proceed and press ENTER when ready" ENTER
+
+for x in nginx;
+do ssh $x 'sudo cp $HOME/nginx.conf /etc/nginx&&sudo systemctl enable nginx&&sudo systemctl restart nginx;';done
+
+for x in httpd httpd-php nginx;
+do ssh $x 'ssh git@github.com;sudo yum -y install git&&git clone git@github.com:ec-europa/devco-reference.git&&rm -rf $HOME/devco-reference/.git&&cp $HOME/build.project.props $HOME/devco-reference&&sudo yum install -y composer&&cd $HOME/devco-reference&&composer install&&./toolkit/phing  build-platform&&sudo cp $HOME/httpd.conf /etc/httpd/conf&&sudo cp $HOME/00-mpm.conf /etc/httpd/conf.modules.d&&sudo systemctl enable httpd&&sudo systemctl restart httpd&&cd $HOME/devco-reference&&./toolkit/phing build-subsite-dev&&./toolkit/phing install-clone&&cd build&&../toolkit/drush rr&&../toolkit/drush cc all;';done
+
+sed -i 's/base_url/$base_url = \'http:\/\/192.168.255.250\';/' $HOME/devco-reference/build/sites/devco/settings.php
+
+
+#FINAL
+
+for x in $(grep . list.not_me);
+do scp sysctl.conf $x:;ssh $x 'sudo chown root. sysctl.conf&&sudo cp sysctl.conf /etc';done
+
+sudo cp sysctl.conf /etc&&sudo chown root. /etc/sysctl.conf
+
+for x in $(grep . list.not_me);
+do ssh $x 'sudo yum update -y&&cd /&&sudo git add .&&sudo git commit -m "Final setup"';done;
+
+sudo yum update -y&&cd /&&sudo git add .&&sudo git commit -m "Final setup"
