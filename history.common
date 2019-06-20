@@ -20,3 +20,6 @@ do scp $x.firewall $x:firewall;ssh $x 'sudo chown root. firewall&&sudo chmod +x 
 
 for x in $(grep . list.not_me);
 do ssh $x 'sudo yum install -y elinks';done
+
+for x in $(grep . list.not_me);
+do scp sysctl.conf $x:;ssh $x 'sudo chown root. sysctl.conf&&sudo mv sysctl.conf /etc/sysctl.d/99-sysctl.conf&&sudo init 6';done
