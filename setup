@@ -38,7 +38,8 @@ for x in client;
 do ssh 'sudo sed -i /swappiness/s/100/0/ sysctl.conf /etc/sysctl.conf';done
 
 for x in httpd httpd-php nginx;
-do scp build.project.props $x:;ssh $x 'sed -i /project.url.base/s/^project.url.base.*$/project.url.base = http:\/\/'$(grep $x mgmt.hosts|cut -d' ' -f1)'/ build.project.props';done
+do scp build.project.props $x:;
+ssh $x "sed -i '/project.url.base/s/^project.url.base.*$/project.url.base = http:\/\/'$(grep $x$ mgmt.hosts|cut -d' ' -f1)/ build.project.props";done
 
 for x in httpd nginx;
 do scp $x.$x.conf $x:$x.conf;done
