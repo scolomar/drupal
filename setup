@@ -34,6 +34,9 @@ for x in $(grep . list.not_me);
 do scp sysctl.conf $x:;ssh $x 'sudo chown root. sysctl.conf&&sudo cp sysctl.conf /etc';done
 sudo cp sysctl.conf /etc&&sudo chown root. /etc/sysctl.conf
 
+for x in client;
+do ssh 'sudo sed -i /swappiness/s/100/0/ sysctl.conf /etc/sysctl.conf';done
+
 for x in httpd httpd-php nginx;
 do scp build.project.props $x:;ssh $x 'sed -i /project.url.base/s/^project.url.base.*$/project.url.base = http:\/\/'$(grep $x mgmt.hosts|cut -d' ' -f1)'/ build.project.props';done
 
