@@ -1,5 +1,10 @@
 #!/bin/bash -x
 
+function scp_cp_chown
+{
+scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";
+}
+
 path=$PWD;
 
 sudo yum update -y&&sudo yum install git -y&&cd /&&sudo curl -o .gitignore https://raw.githubusercontent.com/secobau/linux/master/Scripts/rootfs.gitignore&&sudo git init&&sudo git add .&&sudo git commit -m "Initial commit";
@@ -17,22 +22,24 @@ do ssh $x 'sudo yum update -y&&sudo yum install git -y&&cd /&&sudo curl -o .giti
 for x in client httpd httpd-php nginx;
 do for y in hosts;
 do for z in /etc;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in client httpd httpd-php mgmt nginx;
 do for y in firewall;
 do for z in /usr/local/sbin;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
-
-for x in client httpd httpd-php mgmt nginx;
-do for y in firewall;
-do for z in /usr/local/sbin;
-do ssh $x "sudo chmod +x $z/$y";done;done;done
+do 
+scp_cp_chown;
+ssh $x "sudo chmod +x $z/$y";
+done;done;done;
 
 for x in client httpd httpd-php mgmt nginx;
 do for y in firewall.service;
 do for z in /etc/systemd/system;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in client httpd httpd-php nginx;
 do for y in firewall.service;
@@ -44,12 +51,16 @@ do ssh $x 'sudo yum install -y elinks';done;
 for x in client httpd httpd-php nginx;
 do for y in my.cnf;
 do for z in /etc;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in client httpd httpd-php mgmt nginx;
 do for y in sysctl.conf;
 do for z in /etc;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in client;
 do for y in sysctl.conf;
@@ -59,7 +70,9 @@ do ssh $x "sudo yum install -y httpd-tools&&sudo sed -i /swappiness/s/100/0/ $y 
 for x in client;
 do for y in 99-$x.conf;
 do for z in /etc/security/limits.d;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in httpd httpd-php nginx;
 do for y in build.project.props;
@@ -80,27 +93,37 @@ do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo systemctl enable 
 for x in httpd nginx;
 do for y in php-fpm.conf;
 do for z in /etc;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in httpd nginx;
 do for y in www.conf;
 do for z in /etc/php-fpm.d;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in httpd httpd-php;
 do for y in httpd.conf;
 do for z in /etc/httpd/conf;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in httpd;
 do for y in 00-mpm.conf;
 do for z in /etc/httpd/conf.modules.d;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in nginx;
 do for y in nginx.conf;
 do for z in /etc/nginx;
-do scp $x.$y $x:$y;ssh $x "sudo cp $y $z&&sudo chown root. $z/$y";done;done;done;
+do 
+scp_cp_chown;
+done;done;done;
 
 for x in httpd httpd-php nginx;
 do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&echo&&echo $x&&cat .ssh/id_rsa.pub;';done;
