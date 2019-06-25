@@ -39,8 +39,7 @@ do for y in firewall.service;
 do for z in /etc/systemd/system;
 do 
 scp_cp_chown;
-done;done;done;
-
+done;done;done; 
 for x in client httpd httpd-php nginx;
 do for y in firewall.service;
 do ssh $x "sudo systemctl daemon-reload;sudo systemctl enable $y;sudo systemctl restart $y";done;done;
@@ -89,6 +88,16 @@ do ssh $x 'sudo yum -y install php56u-fpm&&sudo systemctl enable php-fpm;';done;
 
 for x in nginx;
 do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo systemctl enable nginx;';done;
+
+for x in httpd nginx;
+do for y in service.conf;
+do for w in $x mysqld php-fpm;
+do for z in /etc/systemd/system/$w.service.d;
+do 
+ssh $x "sudo mkdir $z";
+scp_cp_chown;
+done;done;done;
+done;
 
 for x in httpd nginx;
 do for y in php-fpm.conf;
