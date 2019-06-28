@@ -72,7 +72,7 @@ if [ -n "$service_ports" ];
       for z in $service_net;
        do
         iptables -A INPUT -s $z -p $x -m $x --dport $y -j ACCEPT;
-        iptables -A OUTPUT -d $z -p $x -m $x --sport $y -m state --state RELATED,ESTABLISHED -j ACCEPT;
+        iptables -A OUTPUT -d $z -p $x -m $x --sport $y -j ACCEPT;
        done;
      done;
    done;
