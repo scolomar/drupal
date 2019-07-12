@@ -139,7 +139,7 @@ do ssh $x 'ssh-keygen -P "" -f $HOME/.ssh/id_rsa&&echo&&echo $x&&cat .ssh/id_rsa
 read -p "Please upload the previous SSH public key to your Github repository to proceed and press ENTER when ready" ENTER;
 
 for x in httpd httpd-php nginx;
-do ssh $x 'sudo yum -y install git&&git clone git@github.com:ec-europa/devco-reference.git&&rm -rf $HOME/devco-reference/.git&&cp $HOME/build.project.props $HOME/devco-reference&&sudo yum install -y composer&&cd $HOME/devco-reference&&composer install&&composer update&&sudo systemctl restart mysqld&&./toolkit/phing  build-platform&&cd $HOME/devco-reference&&./toolkit/phing build-subsite-dev&&./toolkit/phing install-clone&&cd build&&../toolkit/drush rr&&../toolkit/drush cc all;';done;
+do ssh $x 'sudo yum -y install git&&git clone git@github.com:ec-europa/food-animals-plants-reference.git&&rm -rf $HOME/food-animals-plants-reference/.git&&cp $HOME/build.project.props $HOME/food-animals-plants-reference&&sudo yum install -y composer&&cd $HOME/food-animals-plants-reference&&composer install&&composer update&&sudo systemctl restart mysqld&&./toolkit/phing  build-platform&&cd $HOME/food-animals-plants-reference&&./toolkit/phing build-subsite-dev&&./toolkit/phing install-clone&&cd build&&../toolkit/drush rr&&../toolkit/drush cc all;';done;
 
 for x in client httpd httpd-php mgmt nginx;
 do ssh $x 'sudo yum update -y&&cd /&&sudo git add .&&sudo git commit -m "Final setup"';done;
