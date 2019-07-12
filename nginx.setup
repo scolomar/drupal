@@ -72,6 +72,9 @@ for x in nginx;
 do ssh $x 'sudo amazon-linux-extras install nginx1.12 -y&&sudo systemctl enable nginx;';done;
 
 for x in nginx;
+do ssh $x 'sudo yum -y install siege;';done;
+
+for x in nginx;
 do for y in service.conf;
 do for w in $x mysqld php-fpm;
 do for z in /etc/systemd/system/$w.service.d;
